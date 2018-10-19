@@ -24,7 +24,7 @@ async function requestGeolocationPermission() {
   }
 }
 
-export default class App extends React.Component implements PermissionAwareActivity {
+export default class App extends React.Component {
   constructor(props) {
     super(props)
     let latitude        = '37.8267'
@@ -33,21 +33,22 @@ export default class App extends React.Component implements PermissionAwareActiv
     let darkskyUrl      = `https://api.darksky.net/forecast/${darkskyKey}/${latitude},${longitude}`
     let darkskyResponse = null
     this.state = { latitude, longitude, darkskyKey, darkskyUrl, darkskyResponse }
-
     fetch(darkskyUrl, { method: 'GET', headers: { Accept: 'application/json' } })
       .then(response => response.json())
       .then(data => {
+        console.log(data)
+        return data
+      })
+      .then(data => {
         this.setState({darkskyResponse: data})
       })
-      .then(data => console.log(data))
-    // switch (this.state.granted) { 'unattempted': 'success': 'error': 'denied':
   }
 
   render() {
     const response = this.state.darkskyResponse
-    let summary = 'no data'
+    let summary = 'no data...'
     if (response)
-      summary = response.currently.summary
+      summary = response.daily.summary
     return <View style={styles.container}>
       <Text>Showing weather in LA</Text>
       <Text>{summary}</Text>
